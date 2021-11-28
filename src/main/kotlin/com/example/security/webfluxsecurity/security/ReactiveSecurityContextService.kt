@@ -12,7 +12,7 @@ class ReactiveSecurityContextService {
     fun generateSecurityContext(accessTokenStr: String) : SecurityContext {
         val jwtToken = JWTParser.parse(accessTokenStr)
         val grantedAuthorities = jwtToken.jwtClaimsSet.getClaim("Roles").toString().split(",")
-            .map { r -> SimpleGrantedAuthority("ROLE_" + r.uppercase()) }.toList()
+            .map { r -> SimpleGrantedAuthority("ROLE_" + r.uppercase().trim()) }.toList()
         val subject = jwtToken.getJWTClaimsSet().getClaim("GivenName")
         return SecurityContextImpl(UsernamePasswordAuthenticationToken(subject, jwtToken.getParsedString(), grantedAuthorities))
     }
