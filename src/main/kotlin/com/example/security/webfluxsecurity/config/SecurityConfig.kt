@@ -1,13 +1,13 @@
 package com.example.security.webfluxsecurity.config
 
 import com.example.security.webfluxsecurity.security.ReactiveSecurityContextRepository
-import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.web.server.SecurityWebFilterChain
+
 
 @Configuration
 @EnableReactiveMethodSecurity
@@ -25,11 +25,8 @@ class SecurityConfig {
             .csrf().disable()
             .cors().disable()
             .logout().disable()
-
-        http
-            //.addFilterAt(authenticationWebFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
-            .authorizeExchange()
-            .pathMatchers("/login", "/logout", "/api/sse-service/events").permitAll()
+        http.authorizeExchange()
+            .pathMatchers("/playground/**", "/graphql/**").permitAll()
             .anyExchange().authenticated()
 
         http.securityContextRepository(reactiveSecurityContextRepository)

@@ -8,5 +8,7 @@ import reactor.core.publisher.Mono
 class BookService {
 
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    fun calculate() : Mono<String> = Mono.just("The method BookService.calculate called")
+    fun calculate() : Mono<String> {
+        return Mono.just("The method BookService.calculate called")
+    }
 }

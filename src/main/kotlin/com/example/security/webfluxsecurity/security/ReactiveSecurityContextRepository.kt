@@ -1,6 +1,7 @@
 package com.example.security.webfluxsecurity.security
 
 import org.springframework.http.HttpCookie
+import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.web.server.context.ServerSecurityContextRepository
 import org.springframework.stereotype.Service
@@ -15,10 +16,13 @@ class ReactiveSecurityContextRepository(private val reactiveSecurityContextServi
     }
 
     override fun load(exchange: ServerWebExchange?): Mono<SecurityContext> {
-       //generate token http://jwtbuilder.jamiekurtz.com/
         val accessToken: MutableList<HttpCookie>? = exchange?.request?.cookies?.get("access_token")
         if (accessToken?.first()?.value != null) {
-            return Mono.just(reactiveSecurityContextService.generateSecurityContext(accessToken.first().value))
+            val securityCtx =  Mono.just(reactiveSecurityContextService.generateSecurityContext(accessToken.first().value))
+            securityCtx.subscribe { context ->
+                println("Current security ctx in ReactiveSecurityContextRepository = " + context.authentication.name)
+            }
+          return  securityCtx
         }
         return Mono.empty()
     }

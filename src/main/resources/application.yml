@@ -1,0 +1,13 @@
+server:
+  port: 8099
+graphql:
+  packages:
+    - "com.example.security.webfluxsecurity.service"
+    - "com.example.security.webfluxsecurity.dto"
+  subscriptions:
+    # Send a ka message every 1000 ms (1 second)
+    keepAliveInterval: 1000
+  endpoint: "graphql"
+  playground:
+    enabled: true
+    endpoint: "playground"
