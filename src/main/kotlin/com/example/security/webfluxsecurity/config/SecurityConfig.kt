@@ -1,8 +1,12 @@
 package com.example.security.webfluxsecurity.config
 
+import com.example.security.webfluxsecurity.graphql.CustomGraphQLContextFactory
+import com.example.security.webfluxsecurity.graphql.MyGraphQLContext
 import com.example.security.webfluxsecurity.security.ReactiveSecurityContextRepository
+import com.expediagroup.graphql.server.execution.GraphQLContextFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.server.ServerHttpRequest
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.config.web.server.ServerHttpSecurity
