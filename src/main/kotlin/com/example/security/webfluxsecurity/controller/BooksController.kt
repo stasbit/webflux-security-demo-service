@@ -16,6 +16,7 @@ class BooksController {
     @GetMapping("/books/all")
     @ResponseBody
     fun getAllBooks(): Mono<String> {
-        return booksService.calculate()
+       // return booksService.calculate()
+        return Mono.empty()
     }
 }

@@ -21,7 +21,6 @@ class MyGraphQLContext(
 ) : SpringGraphQLContext(request) {
 
     init {
-
         val accessTokenStr = request.headers().firstHeader("Authorization")
         val jwtToken = JWTParser.parse(accessTokenStr)
         val grantedAuthorities = jwtToken.jwtClaimsSet.getClaim("Roles").toString().split(",")

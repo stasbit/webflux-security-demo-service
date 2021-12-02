@@ -6,6 +6,7 @@ import com.expediagroup.graphql.generator.annotations.GraphQLDescription
 import com.expediagroup.graphql.server.execution.GraphQLContextFactory
 import com.expediagroup.graphql.server.operations.Query
 import com.nimbusds.jwt.JWTParser
+import graphql.GraphQLContext
 import graphql.schema.DataFetchingEnvironment
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -13,6 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.security.core.context.SecurityContextImpl
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Hooks
 import reactor.core.publisher.Mono
 
 @Component
@@ -22,20 +24,20 @@ class BooksQuery : Query {
     lateinit var booksService: BookService
 
     @GraphQLDescription(value = "Get Books")
-    fun getAllBooks(dfe: DataFetchingEnvironment, ctx: MyGraphQLContext): Book {
+    suspend fun getAllBooks(): Book {
         println("1")
 
-        val accessTokenStr = ctx.getHTTPRequestHeader("Authorization")
-        val jwtToken = JWTParser.parse(accessTokenStr)
-        val grantedAuthorities = jwtToken.jwtClaimsSet.getClaim("Roles").toString().split(",")
-            .map { r -> SimpleGrantedAuthority("ROLE_" + r.uppercase().trim()) }.toList()
-        val subject = jwtToken.getJWTClaimsSet().getClaim("GivenName")
-        ReactiveSecurityContextHolder.withSecurityContext(
-            Mono.just(
-                SecurityContextImpl(
-                    UsernamePasswordAuthenticationToken(subject, jwtToken.getParsedString(), grantedAuthorities)
-                )
-            ))
+//        val accessTokenStr = ctx.getHTTPRequestHeader("Authorization")
+//        val jwtToken = JWTParser.parse(accessTokenStr)
+//        val grantedAuthorities = jwtToken.jwtClaimsSet.getClaim("Roles").toString().split(",")
+//            .map { r -> SimpleGrantedAuthority("ROLE_" + r.uppercase().trim()) }.toList()
+//        val subject = jwtToken.getJWTClaimsSet().getClaim("GivenName")
+//        ReactiveSecurityContextHolder.withSecurityContext(
+//            Mono.just(
+//                SecurityContextImpl(
+//                    UsernamePasswordAuthenticationToken(subject, jwtToken.getParsedString(), grantedAuthorities)
+//                )
+//            ))
 
 //        dfe.
 //            ReactiveSecurityContextHolder
@@ -43,7 +45,8 @@ class BooksQuery : Query {
 //                .map { context -> context.getAuthentication() }
 //                .subscribe { auth -> println("BooksQuery security ctx in ReactiveSecurityContextRepository = " + auth.name) }
 //        }
-        Mono.just(booksService.calculate()).subscribe { res -> res.subscribe { res2 -> println(res2) } }
+        Hooks.enableContextLossTracking();
+        booksService.calculate().subscribe { res -> println(res) }
         return Book("foo")
     }
 }
